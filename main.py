@@ -13,16 +13,39 @@ APP_SECRET = dontLeak.clientSecret
 USER_SCOPE = [AuthScope.CHAT_READ, AuthScope.CHAT_EDIT, AuthScope.CHANNEL_MANAGE_BROADCAST]
 TARGET_CHANNEL = 'trashpanda_2314'
 
+# Set up the bot with the necessary credentials and scopes
 async def on_ready(ready_event: EventData):
     await ready_event.chat.join_room(TARGET_CHANNEL)
     print('Bot is ready!!')
-    
+
+# print messages to console
 async def on_message(msg: ChatMessage):
     print(f'{msg.user.display_name} - {msg.text}')
 
+async def on_subscription(sub_event: EventSub):
+    user = sub_event.user_name
+    channel = sub_event.channel_name
+    sub_type = sub_event.sub_plan_name
+    message = sub_event.sub_message.text if sub_event.sub_message else "No message provided."
+
+    if sub_event.is_gift:
+        gifter = sub_event.gifter_user_name
+        print(f"{user} was gifted a {sub_type} sub by {gifter} in {channel}! Message: {message}")
+        await chat.send_message(channel, f"🎉 Huge thanks to {gifter} for gifting a {sub_type} sub to {user}! ❤️")
+    else:
+        if sub_event.cumulative_months > 1:
+            print(f"{user} resubscribed to {channel} for {sub_event.cumulative_months} months with a {sub_type} sub! Message: {message}")
+            await chat.send_message(channel, f"🥳 Welcome back, {user}! Thanks for the {sub_type} resub for {sub_event.cumulative_months} months! 🙌")
+        else:
+            print(f"{user} subscribed to {channel} with a {sub_type} sub! Message: {message}")
+            await chat.send_message(channel, f"Thank you for the sub, {user}! Welcome! 😊")
+
+# Commands:
+# !help - List all commands
 async def help_command(cmd: ChatMessage):
     await cmd.reply('Commands: !lurk, !yabba, !settings, !score, !welcome, !rank, !poll [question] [time] [option1] [option2], !vote [option]')
 
+# !lurk - Respond with a random lurk message
 async def lurk_command(cmd: ChatMessage):
     chance = random.randint(0, 4)
 
@@ -37,6 +60,7 @@ async def lurk_command(cmd: ChatMessage):
     elif chance == 4:
         await cmd.reply("Take your time, we'll be here when you get back o7")
 
+# !yabba - Respond with a random Yabba message or a link to a Yabba video
 async def yabba_command(cmd: ChatMessage):
     chance = random.randint(0, 1)
 
@@ -45,24 +69,30 @@ async def yabba_command(cmd: ChatMessage):
     elif chance == 1:
         await cmd.reply('https://youtu.be/wbHqYDBRdfE')
 
+# !settings - Respond with a message about settings
 async def settings_command(cmd: ChatMessage):
     await cmd.reply("Why are you trying to copy my settings when im worse than you?")
 
+# !score - Respond with a message about scores (used for custom games)
 async def score_command(cmd: ChatMessage):
     with open('scores.txt', 'r') as file:
         scores = file.read()
         
     await cmd.reply(f"{scores}")
 
+# !welcome - Respond with a welcome message
 async def welcome_command(cmd: ChatMessage):
     await cmd.reply(f"Welcome {cmd.user.display_name} to the stream!")
 
+# !rank - Respond with a message about streamer ranks
 async def rank_command(cmd: ChatMessage):
     with open('rank.txt', 'r') as file:
         rank = file.read()
     
     await cmd.reply(f"{rank}")
 
+
+# !poll - Create a poll with a question, time limit, and options
 polls = {}  # store polls
 
 async def poll_command(cmd: ChatMessage):
@@ -101,7 +131,7 @@ async def poll_command(cmd: ChatMessage):
         vote_results = ", ".join([f"{option}: {count}" for option, count in results["votes"].items()])
         await cmd.reply(f"Poll results: Question: {results['question']} {vote_results}")
 
-
+# !vote - Vote for an option in an active poll
 async def vote_command(cmd: ChatMessage):
     message = cmd.text
     option = message.split("!vote", 1)[1].strip()  # Get everything after "!vote" and remove leading/trailing spaces.

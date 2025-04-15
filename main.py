@@ -122,6 +122,8 @@ async def vote_command(cmd: ChatMessage):
 
 #async def sfx_command(cmd: ChatMessage):
     
+async def tracker_command(cmd: ChatMessage):
+    await cmd.reply("https://tracker.gg/valorant/profile/riot/TrashPanda%23TT23")
 
 async def run_bot():
     bot = await Twitch(APP_ID, APP_SECRET)

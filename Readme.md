@@ -13,7 +13,8 @@ a basic Twitch chatbot to be used on my twitch streams that has custom commands
 !score: command to see the score of friendly tournaments (updated after each game ends manually) <br>
 !welcome: command to welcome people to the stream <br>
 !rank: inform the user of current and peak rank <br>
-!poll: command to open up a poll with options of [question, time in seconds, options for the poll]
+!tracker: responds with link to my tracker <br>
+!poll: command to open up a poll with options of [question, time in seconds, options for the poll] <br>
 !vote: command to vote on current poll
 
 ### Future commands:

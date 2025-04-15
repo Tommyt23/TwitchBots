@@ -12,6 +12,7 @@ APP_ID = dontLeak.clientID
 APP_SECRET = dontLeak.clientSecret
 USER_SCOPE = [AuthScope.CHAT_READ, AuthScope.CHAT_EDIT, AuthScope.CHANNEL_MANAGE_BROADCAST]
 TARGET_CHANNEL = 'trashpanda_2314'
+BOT_NICK = 'PandaBot'
 
 # Set up the bot with the necessary credentials and scopes
 async def on_ready(ready_event: EventData):

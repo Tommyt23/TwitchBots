@@ -22,7 +22,7 @@ async def on_ready(ready_event: EventData):
 async def on_message(msg: ChatMessage):
     print(f'{msg.user.display_name} - {msg.text}')
 
-async def on_subscription(sub_event: EventSub):
+async def on_subscription(sub_event: ChatSub):
     user = sub_event.user_name
     channel = sub_event.channel_name
     sub_type = sub_event.sub_plan_name
@@ -31,14 +31,14 @@ async def on_subscription(sub_event: EventSub):
     if sub_event.is_gift:
         gifter = sub_event.gifter_user_name
         print(f"{user} was gifted a {sub_type} sub by {gifter} in {channel}! Message: {message}")
-        await chat.send_message(channel, f"🎉 Huge thanks to {gifter} for gifting a {sub_type} sub to {user}! ❤️")
+        await sub_event.chat.send_message(channel, f"🎉 Huge thanks to {gifter} for gifting a {sub_type} sub to {user}! ❤️")
     else:
         if sub_event.cumulative_months > 1:
             print(f"{user} resubscribed to {channel} for {sub_event.cumulative_months} months with a {sub_type} sub! Message: {message}")
-            await chat.send_message(channel, f"🥳 Welcome back, {user}! Thanks for the {sub_type} resub for {sub_event.cumulative_months} months! 🙌")
+            await sub_event.chat.send_message(channel, f"🥳 Welcome back, {user}! Thanks for the {sub_type} resub for {sub_event.cumulative_months} months! 🙌")
         else:
             print(f"{user} subscribed to {channel} with a {sub_type} sub! Message: {message}")
-            await chat.send_message(channel, f"Thank you for the sub, {user}! Welcome! 😊")
+            await sub_event.chat.send_message(channel, f"Thank you for the sub, {user}! Welcome! 😊")
 
 # Commands:
 # !help - List all commands

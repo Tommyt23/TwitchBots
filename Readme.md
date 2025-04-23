@@ -19,4 +19,10 @@ a basic Twitch chatbot to be used on my twitch streams that has custom commands
 
 ### Future commands:
 
-!sfx: [option of sound] using obs websocket to play through obs or make a python application that would be able to play the audio on stream
+!sfx: [option of sound] using obs websocket to play through obs or make a python application that would be able to play the audio on stream <br>
+
+## Stream Overlay:
+
+using text source on obs display text chat on the stream
+has a max number of characters that can be displayed on each line
+has a max number of lines that get displayed at any time

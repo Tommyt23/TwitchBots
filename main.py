@@ -105,6 +105,16 @@ async def help_command(cmd: ChatMessage):
     await cmd.reply(
         'Commands: !lurk, !yabba, !settings, !score, !welcome, !rank, !tracker, !poll [question] [time] [option1] [option2], !vote [option]')
 
+MINS_BETWEEN_PROMPTS = 7.5
+
+async def send_periodic_help(chat: Chat):
+    while True:
+        await asyncio.sleep(MINS_BETWEEN_PROMPTS * 60)
+        try:
+            await chat.send_message(TARGET_CHANNEL,
+                                      'For a list of available commands, type !help')
+        except Exception as e:
+            print(f"Error sending periodic help message: {e}")
 
 # !lurk - Respond with a random lurk message
 async def lurk_command(cmd: ChatMessage):

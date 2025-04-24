@@ -16,7 +16,6 @@ APP_ID = dontLeak.clientID
 APP_SECRET = dontLeak.clientSecret
 USER_SCOPE = [AuthScope.CHAT_READ, AuthScope.CHAT_EDIT, AuthScope.CHANNEL_MANAGE_BROADCAST]
 TARGET_CHANNEL = 'trashpanda_2314'
-BOT_NICK = 'PandaBot'
 
 try:
     winOBS = obsws.ReqClient(host=dontLeak.serverIP, port=dontLeak.serverPort, password=dontLeak.serverPassword)
@@ -30,6 +29,7 @@ except:
 async def on_ready(ready_event: EventData):
     await ready_event.chat.join_room(TARGET_CHANNEL)
     print('Bot is ready!!')
+    asyncio.create_task(send_periodic_help(ready_event.chat))
 
 
 MAX_CHARS_PER_LINE = 30
@@ -228,6 +228,16 @@ async def vote_command(cmd: ChatMessage):
     if not voted:
         await cmd.reply("No active poll with that option.")
 
+async def view_poll_command(cmd: ChatMessage):
+    if polls:  # Check if there are any active polls
+        response = "Current active polls:\n"
+        for poll_id, poll_data in polls.items():
+            options_str = ", ".join([f"{option} ({count} votes)" for option, count in poll_data["votes"].items()])
+            response += f"Question: {poll_data['question']}, Options: {options_str}\n"
+        await cmd.reply(response.strip())
+    else:
+        await cmd.reply("There are currently no active polls.")
+
 
 # async def sfx_command(cmd: ChatMessage):
 
@@ -256,6 +266,7 @@ async def run_bot():
     chat.register_command('vote', vote_command)
     chat.register_command('rank', rank_command)
     chat.register_command('tracker', tracker_command)
+    chat.register_command('view-poll', view_poll_command)
 
     chat.start()
 
